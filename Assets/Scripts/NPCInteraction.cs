@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class NPCInteraction : MonoBehaviour
@@ -35,7 +34,7 @@ public class NPCInteraction : MonoBehaviour
         if (other.GetComponent<PlayerMovement>() != null)
         {
             playerNearby = true;
-            Debug.Log("Presiona E para hablar con " + npcName);
+            ShowInteractionPrompt();
         }
     }
 
@@ -44,7 +43,7 @@ public class NPCInteraction : MonoBehaviour
         if (other.GetComponent<PlayerMovement>() != null)
         {
             playerNearby = false;
-            EndDialogue();
+            EndDialogue(false);
         }
     }
 
@@ -70,26 +69,43 @@ public class NPCInteraction : MonoBehaviour
 
         if (currentDialogueIndex < dialogues.Length)
         {
-            string message = npcName + ": " +
-                             dialogues[currentDialogueIndex];
+            string message =
+                npcName + ": " + dialogues[currentDialogueIndex];
 
             interactionUI.ShowMessage(message);
             currentDialogueIndex++;
         }
         else
         {
-            EndDialogue();
+            EndDialogue(true);
         }
     }
 
-    private void EndDialogue()
+    private void ShowInteractionPrompt()
     {
-        if (dialogueActive && interactionUI != null)
+        if (interactionUI != null)
+        {
+            interactionUI.ShowMessage(
+                "Presiona E para hablar con " + npcName
+            );
+        }
+    }
+
+    private void EndDialogue(bool showPrompt)
+    {
+        dialogueActive = false;
+        currentDialogueIndex = 0;
+
+        if (interactionUI == null)
+            return;
+
+        if (showPrompt && playerNearby)
+        {
+            ShowInteractionPrompt();
+        }
+        else
         {
             interactionUI.HideMessage();
         }
-
-        dialogueActive = false;
-        currentDialogueIndex = 0;
     }
 }

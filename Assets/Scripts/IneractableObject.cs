@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class InteractableObject : MonoBehaviour
@@ -11,6 +10,7 @@ public class InteractableObject : MonoBehaviour
     [SerializeField] private InteractionUI interactionUI;
 
     private bool playerNearby = false;
+    private bool showingInteraction = false;
 
     private void Update()
     {
@@ -25,7 +25,7 @@ public class InteractableObject : MonoBehaviour
         if (other.GetComponent<PlayerMovement>() != null)
         {
             playerNearby = true;
-            Debug.Log("Presiona E para interactuar.");
+            ShowInteractionPrompt();
         }
     }
 
@@ -34,6 +34,7 @@ public class InteractableObject : MonoBehaviour
         if (other.GetComponent<PlayerMovement>() != null)
         {
             playerNearby = false;
+            showingInteraction = false;
 
             if (interactionUI != null)
             {
@@ -47,11 +48,22 @@ public class InteractableObject : MonoBehaviour
         if (interactionUI != null)
         {
             interactionUI.ShowMessage(interactionMessage);
+            showingInteraction = true;
         }
         else
         {
             Debug.LogWarning(
                 "No se ha asignado InteractionUI."
+            );
+        }
+    }
+
+    private void ShowInteractionPrompt()
+    {
+        if (interactionUI != null)
+        {
+            interactionUI.ShowMessage(
+                "Presiona E para interactuar"
             );
         }
     }
